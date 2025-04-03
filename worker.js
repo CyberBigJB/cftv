@@ -257,7 +257,7 @@ const HTML_TEMPLATE = `
                 <label class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">选择采集站点</label>
                 <select id="apiSource" class="w-full px-3 py-2.5 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors" style="background-color: var(--color-bg-secondary); border: 1px solid var(--color-border); color: var(--color-text-primary);">
                     <option value="heimuer">黑莓影视 (heimuer)</option>
-                    <option value="hw8">hw8 (hw8)</option>
+                    <option value="360">360 (360)</option>
                     <option value="ffzy">非凡影视 (ffzy)</option>
                     <option value="custom">自定义接口</option>
                 </select>
@@ -664,10 +664,10 @@ const API_SITES = {
         name: '黑木耳',
         detail: 'https://json.heimuer.xyz',
     },
-    hw8: {
-        api: 'https://cjhwba.com',
-        name: 'hw8',
-        detail: 'https://cjhwba.com',
+    360: {
+        api: 'https://360zy.com',
+        name: '360',
+        detail: 'https://360zy.com',
     },
 
     ffzy: {
