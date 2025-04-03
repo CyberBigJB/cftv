@@ -662,7 +662,7 @@ const API_SITES = {
     heimuer: {
         api: 'https://json.heimuer.xyz',
         name: '黑木耳',
-        detail: 'https://heimuer.tv',
+        detail: 'https://json.heimuer.xyz',
     },
     hw8: {
         api: 'https://cjhwba.com',
@@ -671,9 +671,9 @@ const API_SITES = {
     },
 
     ffzy: {
-        api: 'http://ffzy5.tv',
+        api: 'http://api.ffzyapi.com',
         name: '非凡影视',
-        detail: 'http://ffzy5.tv',
+        detail: 'http://api.ffzyapi.com',
     },
 };
 
@@ -725,21 +725,29 @@ async function handleRequest(request) {
 
     if (url.pathname === '/api/detail') {
         const id = url.searchParams.get('id');
-        const source = url.searchParams.get('source') || 'heimuer';
+        const source = url.searchParams.get('source') ;
         const customApi = url.searchParams.get('customApi') || '';
-        const detailUrl = `https://r.jina.ai/${
+        const detailUrl = `${
             customApi ? customApi : API_SITES[source].detail
-        }/index.php/vod/detail/id/${id}.html`;
+        }/api.php/provide/vod/?ac=detail&ids=${id}`;
         const response = await fetch(detailUrl);
-        const html = await response.text();
-
-        // 更新正则表达式以匹配新的 URL 格式
+        
+        const data = await response.json();
+        // 提取 vod_play_url（假设返回的数据结构和原问题一致）
+        let vodPlayUrl = "";
+        if (data.list && data.list[0] && data.list[0].vod_play_url) {
+        vodPlayUrl = data.list[0].vod_play_url;
+         }
+    
+       // 更新正则表达式以匹配新的 URL 格式
         let matches = [];
         if (source === 'ffzy') {
-            matches = html.match(/(?<=\$)(https?:\/\/[^"'\s]+?\/\d{8}\/\d+_[a-f0-9]+\/index\.m3u8)/g) || [];
-            matches = matches.map(link => link.split('(')[1]);
+        // 1. 先取 $$$ 后面的部分（M3U8 源）
+            const m3u8Part = vodPlayUrl.split('$$$')[1] || "";
+        // 2. 用正则匹配 index.m3u8 地址
+            matches = m3u8Part.match(/https?:\/\/[^"'\s]+?\/\d{8}\/\d+_[a-f0-9]+\/index\.m3u8/g) || [];
         } else {
-            matches = html.match(/\$https?:\/\/[^"'\s]+?\.m3u8/g) || [];
+            matches = vodPlayUrl.match(/\$https?:\/\/[^"'\s]+?\.m3u8/g) || [];
             matches = matches.map(link => link.substring(1)); // 移除开头的 $
         }
 
